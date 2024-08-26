@@ -1,12 +1,35 @@
+"use client";
+
 import WorkoutCard from "@/component/WorkoutCard";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+
+type Exercise = { name: string; value: number };
 
 export default function Home() {
-  const exercises = [
-    { name: "스쿼트", value: 120 },
-    { name: "데드리프트", value: 150 },
-    { name: "벤치프레스", value: 90 },
-  ];
+  const router = useRouter();
+  const [exercises, setExercises] = useState<Exercise[]>([
+    { name: "스쿼트", value: 140 },
+    { name: "데드리프트", value: 190 },
+    { name: "벤치프레스", value: 100 },
+  ]);
+
+  useEffect(() => {
+    // URL에서 데이터 로드
+    const searchParams = new URLSearchParams(window.location.search);
+    const exercisesFromURL = searchParams.get("exercises");
+    if (exercisesFromURL) {
+      setExercises(JSON.parse(decodeURIComponent(exercisesFromURL)));
+    }
+  }, []);
+
+  const saveToURL = useCallback(() => {
+    console.log("test");
+    const exercisesParam = encodeURIComponent(JSON.stringify(exercises));
+    router.push(`?exercises=${exercisesParam}`);
+  }, [exercises, router]);
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
@@ -34,7 +57,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="relative z-[-1] flex place-items-center">
+      <div className="relative flex place-items-center">
         <div className="w-full max-w-2xl">
           <div>
             <div className="text-xl sm:text-2xl font-bold text-center">
@@ -48,6 +71,12 @@ export default function Home() {
               ))}
             </div>
           </div>
+          <button
+            className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
+            onClick={saveToURL}
+          >
+            URL에 저장
+          </button>
         </div>
       </div>
 
