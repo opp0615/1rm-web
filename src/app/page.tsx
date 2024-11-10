@@ -15,6 +15,8 @@ export default function Home() {
     { name: "벤치프레스", value: 100 },
   ]);
 
+  // test
+  
   useEffect(() => {
     // URL에서 데이터 로드
     const searchParams = new URLSearchParams(window.location.search);
